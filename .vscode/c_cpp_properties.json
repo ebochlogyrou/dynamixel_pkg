@@ -1,0 +1,30 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/local/home/ebochlogyrou/catkin_ws/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/local/home/ebochlogyrou/catkin_ws/src/bota_driver/bota_node/bota_node/include/**",
+        "/local/home/ebochlogyrou/catkin_ws/src/bota_driver/bota_node/bota_signal_handler/include/**",
+        "/local/home/ebochlogyrou/catkin_ws/src/bota_driver/bota_node/bota_worker/include/**",
+        "/local/home/ebochlogyrou/catkin_ws/src/dynamixel_pkg/include/**",
+        "/local/home/ebochlogyrou/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include/**",
+        "/local/home/ebochlogyrou/catkin_ws/src/bota_driver/rokubimini/include/**",
+        "/local/home/ebochlogyrou/catkin_ws/src/bota_driver/rokubimini_bus_manager/include/**",
+        "/local/home/ebochlogyrou/catkin_ws/src/bota_driver/rokubimini_ethercat/include/**",
+        "/local/home/ebochlogyrou/catkin_ws/src/bota_driver/rokubimini_serial/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
