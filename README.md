@@ -1,0 +1,1 @@
+echo # dynamixel_pkg
