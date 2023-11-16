@@ -9,6 +9,9 @@ def callback(data):
     
     
 
+    
+    
+
 def listener():
 
     # In ROS, nodes are uniquely named. If two nodes with the same
@@ -27,5 +30,7 @@ if __name__ == '__main__':
    set_position_pub =rospy.Publisher("set_position", SetPosition, queue_size=10)
    listener()
     
+
+
 
 
