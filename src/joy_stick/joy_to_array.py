@@ -10,7 +10,7 @@ from std_msgs.msg import Int32MultiArray
 def callback(data):
     
     # Define your mapping from joystick input to Twist message here
-    linear_scale = 40000  # Adjust as needed
+    linear_scale = 100000  # Adjust as needed
 
     # Create a Int32MultiArray message
     message = Int32MultiArray()
@@ -32,11 +32,19 @@ if __name__ == '__main__':
     joy_sub = rospy.Subscriber('/joy', Joy, callback)   #callback is a function that get's called when a subscription event occurs
     motor_pos_pub = rospy.Publisher('/motor/position', Int32MultiArray, queue_size=1)
     # intermitent_pos_pub = rospy.Publisher('/motor/position', Int32MultiArray, queue_size=1)
-    message = Int32MultiArray()
-    message.data = [0, 0]
-    rate = rospy.Rate(50) #50 Hz 
 
-    while not rospy.is_shutdown(): 
+    # message = Int32MultiArray()
+    # message.data = [0, 0]
+    rate = rospy.Rate(50) #50 Hz 
+    current_message = None
+
+    while not rospy.is_shutdown():
+        if current_message is not None:
+            motor_pos_pub(current_message) 
+            rate.sleep()
+        else:
+            rospy.sleep(0.1)
+        
         rospy.spin()        
         rate.sleep()
 
