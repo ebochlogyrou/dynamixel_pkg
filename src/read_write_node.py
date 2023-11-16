@@ -76,8 +76,8 @@ DEVICENAME                  = '/dev/ttyUSB0'    # Check which port is being used
 
 TORQUE_ENABLE               = 1                 # Value for enabling the torque
 TORQUE_DISABLE              = 0                 # Value for disabling the torque
-DXL_MINIMUM_POSITION_VALUE  = 0               # Dynamixel will rotate between this value
-DXL_MAXIMUM_POSITION_VALUE  = 1000            # and this value (note that the Dynamixel would not move when the position value is out of movable range. Check e-manual about the range of the Dynamixel you use.)
+DXL_MINIMUM_POSITION_VALUE  = -10000               # Dynamixel will rotate between this value
+DXL_MAXIMUM_POSITION_VALUE  = 10000             # and this value (note that the Dynamixel would not move when the position value is out of movable range. Check e-manual about the range of the Dynamixel you use.)
 DXL_MOVING_STATUS_THRESHOLD = 20                # Dynamixel moving status threshold
 
 portHandler = PortHandler(DEVICENAME)

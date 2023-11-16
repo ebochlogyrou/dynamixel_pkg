@@ -13,6 +13,10 @@
         
     </node>
 
+    <node pkg="dynamixel_pkg" type="joy_to_array.py" name="joy_to_array_py_node">
+        
+    </node>
+
 
 
 </launch>
