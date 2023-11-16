@@ -69,7 +69,7 @@ PROTOCOL_VERSION            = 2.0               # See which protocol version is 
 
 # Default setting
 DXL_ID_1                     = 1                 # Dynamixel ID : 1
-DXL_ID_2                     = 2
+#DXL_ID_2                     = 2
 BAUDRATE                    = 57600             # Dynamixel default baudrate : 57600
 DEVICENAME                  = '/dev/ttyUSB0'    # Check which port is being used on your controller
                                                 # ex Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
@@ -84,6 +84,8 @@ portHandler = PortHandler(DEVICENAME)
 packetHandler = PacketHandler(PROTOCOL_VERSION)
 
 def set_goal_pos_callback(data):
+    global DXL_ID_1
+    DXL_ID_1 = data.id
     print("Set Goal Position of ID %s = %s" % (data.id, data.position))
     dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, data.id, ADDR_GOAL_POSITION, data.position)
 
@@ -138,19 +140,19 @@ def main():
     else:
         print("DYNAMIXEL_ID_1 has been successfully connected")
 
-    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID_2, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-        print("Press any key to terminate...")
-        getch()
-        quit()
-    elif dxl_error != 0:
-        print("%s" % packetHandler.getRxPacketError(dxl_error))
-        print("Press any key to terminate...")
-        getch()
-        quit()
-    else:
-        print("DYNAMIXEL_ID_2 has been successfully connected")
+    # dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID_2, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
+    # if dxl_comm_result != COMM_SUCCESS:
+    #     print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    #     print("Press any key to terminate...")
+    #     getch()
+    #     quit()
+    # elif dxl_error != 0:
+    #     print("%s" % packetHandler.getRxPacketError(dxl_error))
+    #     print("Press any key to terminate...")
+    #     getch()
+    #     quit()
+    # else:
+    #     print("DYNAMIXEL_ID_2 has been successfully connected")
 
 
     print("Ready to get & set Position.")
