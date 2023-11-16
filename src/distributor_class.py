@@ -3,7 +3,7 @@ import rospy
 from std_msgs.msg import Int32MultiArray 
 from dynamixel_sdk_examples.msg import SetPosition 
 
-class distributor: # takes an array which has the size of the number of dynamixels and sends it as individual messages to the read_write_node.py
+class distributor: # takes an array which has the size of the number of dynamixels and  sends it as individual messages to the read_write_node.py
     def __init__(self):
         pub_topic_name = "set_position" 
         sub_topic_name = "motor/position" #topic comming from the deg_to_clicks
@@ -13,11 +13,15 @@ class distributor: # takes an array which has the size of the number of dynamixe
         self.set_individ_pose_msg = SetPosition()
 
     
-    def callback(self, msg): 
-        for index, element in enumerate(msg): 
-            self.set_individ_pose_msg.id = index + 1 
+    def callback(self, msg):
+        
+        for index, element in enumerate(msg.data):  #tranverses through message array
+            self.set_individ_pose_msg.id = index + 1
+            #because matrices start from 0 index
             self.set_individ_pose_msg.position = element
             self.pub.publish(self.set_individ_pose_msg) 
+            #rospy.sleep(0.2)
+
          
 
 
