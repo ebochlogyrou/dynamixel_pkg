@@ -6,6 +6,9 @@ from dynamixel_sdk_examples.msg import SetPosition
 
 def callback(data):
     rospy.loginfo(rospy.get_caller_id() + "I heard")
+
+    
+
     
     
 
@@ -27,5 +30,7 @@ if __name__ == '__main__':
    set_position_pub =rospy.Publisher("set_position", SetPosition, queue_size=10)
    listener()
     
+
+
 
 
