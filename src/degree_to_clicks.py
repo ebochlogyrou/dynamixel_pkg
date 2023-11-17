@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+import rospy
+from std_msgs.msg import Int32MultiArray
+
+#This Node transforms a desired input degree comand to the respective clicks. 
+
+#gear ratio=10/51
+#0.088 [deg/puls]
+
+#Tube should turn x°->°abtrieb*51/10=°Antrieb °Antrieb*[puls/deg]=puls_abtrieb
+gear_ratio=51/10
+puls_per_deg=1/0.088
+dtc_factor = gear_ratio*puls_per_deg
+
+# Subscribe to "vector/rotation" topic and publish to "motor/position"
+def callback(msg):   
+    transformed_data = Int32MultiArray() 
+    transformed_data.data = [int(value * dtc_factor) for value in msg.data] 
+    clicks_pub.publish(transformed_data)
+
+if __name__ == '__main__':
+    # Initialize node, topics to subscribe and publish to
+    node_name = "degree_to_clicks"
+    rospy.init_node(node_name)
+    dtc_sub = rospy.Subscriber('vector/rotation', Int32MultiArray, callback)
+    clicks_pub = rospy.Publisher('motor/position', Int32MultiArray, queue_size=10)
+    rospy.spin()
