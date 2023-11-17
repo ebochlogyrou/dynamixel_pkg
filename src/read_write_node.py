@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #*******************************************************************************
 # Copyright 2021 ROBOTIS CO., LTD.
@@ -86,8 +86,8 @@ portHandler = PortHandler(DEVICENAME)
 packetHandler = PacketHandler(PROTOCOL_VERSION)
 
 def set_goal_pos_callback(data):
-    global DXL_ID_1
-    DXL_ID_1 = data.id
+    # global DXL_ID_1
+    # DXL_ID_1 = data.id
     print("Set Goal Position of ID %s = %s" % (data.id, data.position))
     dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, data.id, ADDR_GOAL_POSITION, data.position)
 
@@ -127,8 +127,23 @@ def main():
         quit()
 
 
-    # Enable Dynamixel Torque
+    # Enable Dynamixel Torque for ID 1
     dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID_1, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+        print("Press any key to terminate...")
+        getch()
+        quit()
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
+        print("Press any key to terminate...")
+        getch()
+        quit()
+    else:
+        print("DYNAMIXEL_ID_1 has been successfully connected") 
+
+    # Enable Dynamixel Torque for ID 2
+    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID_2, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
         print("Press any key to terminate...")
