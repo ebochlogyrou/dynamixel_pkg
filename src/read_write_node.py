@@ -62,6 +62,7 @@ else:
 # Control table address
 ADDR_TORQUE_ENABLE      = 64               # Control table address is different in Dynamixel model
 ADDR_GOAL_POSITION      = 116
+ADDR_OPERATING_MODE     = 11
 ADDR_PRESENT_POSITION   = 132
 
 # Protocol version
@@ -76,14 +77,17 @@ DEVICENAME                  = '/dev/ttyUSB0'    # Check which port is being used
 
 TORQUE_ENABLE               = 1                 # Value for enabling the torque
 TORQUE_DISABLE              = 0                 # Value for disabling the torque
-DXL_MINIMUM_POSITION_VALUE  = 0               # Dynamixel will rotate between this value
-DXL_MAXIMUM_POSITION_VALUE  = 1000            # and this value (note that the Dynamixel would not move when the position value is out of movable range. Check e-manual about the range of the Dynamixel you use.)
+EXT_POSITION_CONTROL_MODE   = 4
+DXL_MINIMUM_POSITION_VALUE  = -10000               # Dynamixel will rotate between this value
+DXL_MAXIMUM_POSITION_VALUE  = 10000            # and this value (note that the Dynamixel would not move when the position value is out of movable range. Check e-manual about the range of the Dynamixel you use.)
 DXL_MOVING_STATUS_THRESHOLD = 20                # Dynamixel moving status threshold
 
 portHandler = PortHandler(DEVICENAME)
 packetHandler = PacketHandler(PROTOCOL_VERSION)
 
 def set_goal_pos_callback(data):
+    global DXL_ID_1
+    DXL_ID_1 = data.id
     print("Set Goal Position of ID %s = %s" % (data.id, data.position))
     dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, data.id, ADDR_GOAL_POSITION, data.position)
 
@@ -122,7 +126,7 @@ def main():
         getch()
         quit()
 
-    #dxl_id = rospy.get_param('~DXL_ID', )
+
     # Enable Dynamixel Torque
     dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID_1, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
     if dxl_comm_result != COMM_SUCCESS:
@@ -136,23 +140,10 @@ def main():
         getch()
         quit()
     else:
-        print("DYNAMIXEL_ID_1 has been successfully connected")
-
-    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID_2, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-        print("Press any key to terminate...")
-        getch()
-        quit()
-    elif dxl_error != 0:
-        print("%s" % packetHandler.getRxPacketError(dxl_error))
-        print("Press any key to terminate...")
-        getch()
-        quit()
-    else:
-        print("DYNAMIXEL_ID_2 has been successfully connected")
+        print("DYNAMIXEL_ID_1 has been successfully connected") 
 
 
+   
     print("Ready to get & set Position.")
 
     read_write_py_node()
