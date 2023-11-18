@@ -26,13 +26,19 @@ def inverse_kinematics_n_to_q(n):
         C_01, C_12, C_23, C_34, C_0E, T_01, T_12, T_23, T_34, T_0E = calculate_rotMat_and_transMat(q)
         I_J = joint_to_RotJac(q)
         I_J_pinv = damped_pesudo_inverse(I_J, damping)
-        
+        print(I_J_pinv)
         C_IE = C_0E
 
         #calculate rotation Error
         C_err = np.dot(C_IE_des, C_IE.T)
         dph = rotMatToRotVec(C_err)
-        q = q + alpha*I_J_pinv*dph
+
+        print(q0)
+        print(I_J_pinv @ dph)
+        print(np.dot((alpha*I_J_pinv), dph))
+
+        print(q + np.dot((alpha*I_J_pinv), dph))
+        q = q + np.dot((alpha*I_J_pinv), dph)
 
         it = it + 1
 
@@ -68,15 +74,14 @@ def rotMatToRotVec(C):
 
 
 def damped_pesudo_inverse(A,damping_factor):
-    U, S, Vt = np.linalg.svd(A)
+    """Calculate the damped pseudo-inverse of a matrix."""
 
-    # Regularize singular values
-    S_reg = np.diag(1 / (S + damping_factor))
-
-    # Damped pseudo-inverse
-    A_damped_pseudo_inv = Vt.T @ S_reg @ U.T
-
+    U, S, Vt = np.linalg.svd(A, full_matrices=False)
+    S_inv = np.diag([1 / (s + damping_factor) for s in S])
+    A_damped_pseudo_inv = Vt.T @ S_inv @ U.T
     return A_damped_pseudo_inv
+
+    
 
 
 def rotation_matrix_from_vectors(A, B): #calculates the rotMatrix that alings vector A with vector B // A = np.array([0,1,0])
@@ -158,7 +163,9 @@ def calculate_rotMat_and_transMat(q):
         [0, 0, 1]
     ])
 
-    i_r_12 = d * np.array([np.cos(np.pi - e1), np.sin(np.pi - e1), 0])
+    i_r_12 = d * np.array([[np.cos(np.pi - e1)],
+                          [np.sin(np.pi - e1)],
+                           [ 0]])
 
     C_23 = np.array([
         [np.cos(q2), 0, np.sin(q2)],
@@ -174,7 +181,9 @@ def calculate_rotMat_and_transMat(q):
         [0, 0, 1]
     ])
 
-    iii_r_34 = d * np.array([np.cos(np.pi - e2), np.sin(np.pi - e2), 0])
+    iii_r_34 = d * np.array([[np.cos(np.pi - e2)], 
+                            [np.sin(np.pi - e2)],
+                            [ 0]])
 
     # Create transformation matrices
     T_01 = np.vstack([np.hstack([C_01, o_r_01]), np.array([0, 0, 0, 1])])
