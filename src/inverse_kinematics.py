@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+
+#this is the ROS integration of the inverse Kinematics_file for testing inverse_Kinematic_test.py is used
 import rospy
 import numpy as np
 
