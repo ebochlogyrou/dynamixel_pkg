@@ -19,6 +19,8 @@ def inverse_kinematics_n_to_q(n):
 
     C_IE_des = rotation_matrix_from_vectors(np.array([0,1,0]), n)
 
+    print(C_IE_des)
+
 
 
     while it < max_it:
@@ -26,26 +28,26 @@ def inverse_kinematics_n_to_q(n):
         C_01, C_12, C_23, C_34, C_0E, T_01, T_12, T_23, T_34, T_0E = calculate_rotMat_and_transMat(q)
         I_J = joint_to_RotJac(q)
         I_J_pinv = damped_pesudo_inverse(I_J, damping)
-        print("J_pinv")
-        print(I_J_pinv)
+        #print("J_pinv")
+        #print(I_J_pinv)
         C_IE = C_0E
 
         #calculate rotation Error
         C_err = np.dot(C_IE_des, C_IE.T)
         dph = rotMatToRotVec(C_err)
 
-        print("q0")
-        print(q)
+        #print("q0")
+        #print(q)
 
-        print("I_Jpinv @ dph")
-        print(I_J_pinv @ dph)
+        #print("I_Jpinv @ dph")
+        #print(I_J_pinv @ dph)
         A = np.array((np.dot((alpha*I_J_pinv), dph)).T)
 
-        print("A")
-        print(A)
-        print(A[0])
+        #print("A")
+        #print(A)
+        #print(A[0])
 
-        print(q + A[0])
+        #print(q + A[0])
         q = q + A[0]
 
         it = it + 1
@@ -145,8 +147,8 @@ def joint_to_RotJac(q):
                     [1]])
 
     J_R = np.column_stack([R_I1 @ n_1, R_I3 @ n_3])
-    print("rotJac")
-    print(J_R)
+    #print("rotJac")
+    #print(J_R)
     #J_R = np.column_stack([R_I1 @ n_1, R_I2 @ n_2, R_I3 @ n_3, R_I4 @ n_4])
 
     return J_R
@@ -224,13 +226,13 @@ def calculate_rotMat_and_transMat(q):
 #main
 if __name__ == "__main__":
 
-    normal_vector = np.array([1,0,0])
+    normal_vector = np.array([0,1,0])
 
     q,dph = inverse_kinematics_n_to_q(normal_vector)
    
 
     print("q ", q)
     print("kkkkk")
-    print(dph)
+    print("dph ", dph)
 
 
