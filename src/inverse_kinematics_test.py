@@ -9,9 +9,9 @@ import numpy as np
 def inverse_kinematics_n_to_q(n):
 
     
-    q0 = [0,0]
+    q0 = np.array([1/np.sqrt(2),1/np.sqrt(2)])
     it = 0
-    max_it = 100
+    max_it = 1000
     damping = 0.001
     alpha = 0.5
 
@@ -26,6 +26,7 @@ def inverse_kinematics_n_to_q(n):
         C_01, C_12, C_23, C_34, C_0E, T_01, T_12, T_23, T_34, T_0E = calculate_rotMat_and_transMat(q)
         I_J = joint_to_RotJac(q)
         I_J_pinv = damped_pesudo_inverse(I_J, damping)
+        print("J_pinv")
         print(I_J_pinv)
         C_IE = C_0E
 
@@ -33,12 +34,19 @@ def inverse_kinematics_n_to_q(n):
         C_err = np.dot(C_IE_des, C_IE.T)
         dph = rotMatToRotVec(C_err)
 
-        print(q0)
-        print(I_J_pinv @ dph)
-        print(np.dot((alpha*I_J_pinv), dph))
+        print("q0")
+        print(q)
 
-        print(q + np.dot((alpha*I_J_pinv), dph))
-        q = q + np.dot((alpha*I_J_pinv), dph)
+        print("I_Jpinv @ dph")
+        print(I_J_pinv @ dph)
+        A = np.array((np.dot((alpha*I_J_pinv), dph)).T)
+
+        print("A")
+        print(A)
+        print(A[0])
+
+        print(q + A[0])
+        q = q + A[0]
 
         it = it + 1
 
@@ -123,12 +131,23 @@ def joint_to_RotJac(q):
     R_I3 = T_I3[0:3, 0:3]
     R_I4 = T_I4[0:3, 0:3]
 
-    n_1 = np.array([0,1,0]).reshape(-1, 1)
-    n_2 = np.array([0,0,1]).reshape(-1, 1)
-    n_3 = np.array([0,1,0]).reshape(-1, 1)
-    n_4 = np.array([0,0,1]).reshape(-1, 1)
+    n_1 = np.array([[0],
+                    [1],
+                    [0]])
+    n_2 = np.array([[0],
+                    [0],
+                    [1]])
+    n_3 = np.array([[0],
+                    [1],
+                    [0]])
+    n_4 = np.array([[0],
+                    [0],
+                    [1]])
 
-    J_R = np.column_stack([R_I1 @ n_1, R_I2 @ n_2, R_I3 @ n_3, R_I4 @ n_4])
+    J_R = np.column_stack([R_I1 @ n_1, R_I3 @ n_3])
+    print("rotJac")
+    print(J_R)
+    #J_R = np.column_stack([R_I1 @ n_1, R_I2 @ n_2, R_I3 @ n_3, R_I4 @ n_4])
 
     return J_R
 
@@ -174,6 +193,7 @@ def calculate_rotMat_and_transMat(q):
     ])
 
     ii_r_23 = np.zeros((3, 1))
+    
 
     C_34 = np.array([
         [np.cos(-e2), -np.sin(-e2), 0],
@@ -209,7 +229,7 @@ if __name__ == "__main__":
     q,dph = inverse_kinematics_n_to_q(normal_vector)
    
 
-    print(q)
+    print("q ", q)
     print("kkkkk")
     print(dph)
 
