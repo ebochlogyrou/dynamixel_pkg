@@ -85,11 +85,10 @@ DXL_MOVING_STATUS_THRESHOLD = 20                # Dynamixel moving status thresh
 portHandler = PortHandler(DEVICENAME)
 packetHandler = PacketHandler(PROTOCOL_VERSION)
 
-def set_goal_pos_callback(data):
-    global DXL_ID_1
-    DXL_ID_1 = data.id
+
+def set_goal_pos_callback(data, init_pos): # init_pos is the array of initial positions 
     print("Set Goal Position of ID %s = %s" % (data.id, data.position))
-    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, data.id, ADDR_GOAL_POSITION, data.position)
+    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, data.id, ADDR_GOAL_POSITION, init_pos[data.id - 1] + data.position) #data.id - 1 ensures right id initial position fot the right motor
 
 def get_present_pos(req):
     dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read4ByteTxRx(portHandler, req.id, ADDR_PRESENT_POSITION)
@@ -98,15 +97,16 @@ def get_present_pos(req):
 
 def read_write_py_node():
     rospy.init_node('read_write_py_node')
-    rospy.Subscriber('set_position', SetPosition, set_goal_pos_callback)
-    #rospy.Subscriber('set_position', SetPosition, set_goal_pos_callback)
+    rospy.Subscriber('set_position', SetPosition, lambda data: set_goal_pos_callback(data, init_pos_array)) 
+    #enables passing additional arguments in the set_goal_pos_callback function
     rospy.Service('get_position', GetPosition, get_present_pos)
-    #rospy.Service('get_position_id_2', GetPosition, get_present_pos)
 
     rospy.spin()
 
 def main():
-    # Open port
+    global init_pos_array  #declaring initial positions for motors 1 and 2 
+    init_pos_array = [0,0]
+
     try:
        portHandler.openPort()
        print("Succeeded to open the port")
@@ -141,6 +141,34 @@ def main():
         quit()
     else:
         print("DYNAMIXEL_ID_1 has been successfully connected") 
+        
+        
+     # Enable Dynamixel Torque
+    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID_2, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+        print("Press any key to terminate...")
+        getch()
+        quit()
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
+        print("Press any key to terminate...")
+        getch()
+        quit()
+    else:
+        print("DYNAMIXEL_ID_1 has been successfully connected") 
+
+
+    req = GetPositionRequest()
+    req.id = DXL_ID_1 #initial position for ID_1 
+    init_pos_array[DXL_ID_1 - 1] = get_present_pos(req)
+
+    req2 = GetPositionRequest()
+    req2.id = DXL_ID_2 #initial position for ID_2
+    init_pos_array[DXL_ID_2 - 1] =get_present_pos(req2)
+
+    print ("initial position of ID 1 is '%s'", init_pos_array[0])  
+    print ("initial position of ID 2 is '%s'", init_pos_array[1])  
 
 
    
