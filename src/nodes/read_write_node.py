@@ -57,7 +57,9 @@ else:
             ch = sys.stdin.read(1)
         finally:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        return ch
+        return ch 
+    
+
 
 # Control table address
 ADDR_TORQUE_ENABLE      = 64               # Control table address is different in Dynamixel model
@@ -69,15 +71,13 @@ ADDR_PRESENT_POSITION   = 132
 PROTOCOL_VERSION            = 2.0               # See which protocol version is used in the Dynamixel
 
 # Default setting
-DXL_ID_1                     = 1                 # Dynamixel ID : 1
-DXL_ID_2                     = 2
+DXL_ID                      = 1                 # Dynamixel ID : 1
 BAUDRATE                    = 57600             # Dynamixel default baudrate : 57600
 DEVICENAME                  = '/dev/ttyUSB0'    # Check which port is being used on your controller
                                                 # ex Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
 
 TORQUE_ENABLE               = 1                 # Value for enabling the torque
 TORQUE_DISABLE              = 0                 # Value for disabling the torque
-EXT_POSITION_CONTROL_MODE   = 4
 DXL_MINIMUM_POSITION_VALUE  = -10000               # Dynamixel will rotate between this value
 DXL_MAXIMUM_POSITION_VALUE  = 10000            # and this value (note that the Dynamixel would not move when the position value is out of movable range. Check e-manual about the range of the Dynamixel you use.)
 DXL_MOVING_STATUS_THRESHOLD = 20                # Dynamixel moving status threshold
@@ -128,49 +128,27 @@ def main():
 
 
     # Enable Dynamixel Torque
-    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID_1, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-        print("Press any key to terminate...")
-        getch()
-        quit()
-    elif dxl_error != 0:
-        print("%s" % packetHandler.getRxPacketError(dxl_error))
-        print("Press any key to terminate...")
-        getch()
-        quit()
-    else:
-        print("DYNAMIXEL_ID_1 has been successfully connected") 
-        
-        
-     # Enable Dynamixel Torque
-    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID_2, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-        print("Press any key to terminate...")
-        getch()
-        quit()
-    elif dxl_error != 0:
-        print("%s" % packetHandler.getRxPacketError(dxl_error))
-        print("Press any key to terminate...")
-        getch()
-        quit()
-    else:
-        print("DYNAMIXEL_ID_1 has been successfully connected") 
+    for id in range(1,3): # adjust the range for number of dynamixels
+        dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, id, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
+        if dxl_comm_result != COMM_SUCCESS:
+            print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+            print("Press any key to terminate...")
+            getch()
+            quit()
+        elif dxl_error != 0:
+            print("%s" % packetHandler.getRxPacketError(dxl_error))
+            print("Press any key to terminate...")
+            getch()
+            quit()
+        else:
+            print("DYNAMIXEL ID %s has been successfully connected" %(id)) 
 
 
-    req = GetPositionRequest()
-    req.id = DXL_ID_1 #initial position for ID_1 
-    init_pos_array[DXL_ID_1 - 1] = get_present_pos(req)
-
-    req2 = GetPositionRequest()
-    req2.id = DXL_ID_2 #initial position for ID_2
-    init_pos_array[DXL_ID_2 - 1] =get_present_pos(req2)
-
-    print ("initial position of ID 1 is '%s'", init_pos_array[0])  
-    print ("initial position of ID 2 is '%s'", init_pos_array[1])  
-
-
+    for index, element in enumerate(init_pos_array): 
+        req = GetPositionRequest() 
+        req.id = index + 1 
+        init_pos_array[index] = get_present_pos(req)
+        print ("initial position of ID %s is %s" % (index+1 , init_pos_array[index]))
    
     print("Ready to get & set Position.")
 
