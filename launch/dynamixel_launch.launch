@@ -5,18 +5,9 @@
         
     </node>
 
-    <node pkg="dynamixel_pkg" type="distributor_class.py" name="distributor">
+    <node pkg="dynamixel_pkg" type="dtc_distributor.py" name="dtc_distributor">
         
     </node>    
-
-    <node pkg="joy" type="joy_node" name="joy_node">
-        
-    </node>
-
-    <node pkg="dynamixel_pkg" type="joy_to_array.py" name="joy_to_array_py_node">
-        
-    </node>
-
 
 
 </launch>

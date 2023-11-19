@@ -124,7 +124,6 @@ def main():
         print("Failed to change the baudrate")
         print("Press any key to terminate...")
         getch()
-        quit()
 
 
     # Enable Dynamixel Torque
