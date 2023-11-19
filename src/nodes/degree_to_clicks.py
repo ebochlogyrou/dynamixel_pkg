@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+
+#command to use rostopic pub -1 /joint_angles std_msgs/Int32MultiArray "layout:
+#   dim:
+#   - label: ''
+#     size: 0
+#     stride: 0
+#   data_offset: 0
+# data: [90,-90]" <-- fill in with the desired angle 
+
 import rospy
 from std_msgs.msg import Int32MultiArray
 
