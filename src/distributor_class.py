@@ -6,7 +6,7 @@ from dynamixel_sdk_examples.msg import SetPosition
 class distributor: # takes an array which has the size of the number of dynamixels and  sends it as individual messages to the read_write_node.py
     def __init__(self, rate):
         pub_topic_name = "set_position" 
-        sub_topic_name = "motor/position" #topic comming from the deg_to_clicks
+        sub_topic_name = "clicks_goal_pos_array" #topic comming from the deg_to_clicks
 
         self.pub = rospy.Publisher(pub_topic_name, SetPosition, queue_size=10) 
         self.number_subscriber = rospy.Subscriber(sub_topic_name, Int32MultiArray, self.callback)

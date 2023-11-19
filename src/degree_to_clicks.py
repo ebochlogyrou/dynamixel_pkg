@@ -22,6 +22,6 @@ if __name__ == '__main__':
     # Initialize node, topics to subscribe and publish to
     node_name = "degree_to_clicks"
     rospy.init_node(node_name)
-    dtc_sub = rospy.Subscriber('vector/rotation', Int32MultiArray, callback)
-    clicks_pub = rospy.Publisher('motor/position', Int32MultiArray, queue_size=10)
+    dtc_sub = rospy.Subscriber('joint_angles', Int32MultiArray, callback)
+    clicks_pub = rospy.Publisher('clicks_goal_pos_array', Int32MultiArray, queue_size=10)
     rospy.spin()
