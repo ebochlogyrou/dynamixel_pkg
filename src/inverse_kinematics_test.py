@@ -1,7 +1,8 @@
 from helper_functions.helper_inverse_kinematics import inverse_kinematics_n_to_q
 import numpy as np
 
-#for testing the inverse kinematics
+#for testing the inverse kinematics in your IDE
+#not a ROS node !
 
 ############################################################################################################################
 #main
