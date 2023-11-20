@@ -11,5 +11,9 @@
         
     </node>    
 
+    <node pkg="dynamixel_pkg" type="inverse_kinematics.py" name="inverse_kinematics">
+    
+    </node>
+
 
 </launch>
