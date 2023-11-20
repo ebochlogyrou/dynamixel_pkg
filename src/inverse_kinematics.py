@@ -31,6 +31,6 @@ if __name__ == '__main__':
     node_name = "inverse_kinematics_n_to_q"
     rospy.init_node(node_name, anonymous=True)
 
-    normal_vector_sub = rospy.Subscriber('normalvector_enteffector', Float32MultiArray, callback)
+    normal_vector_sub = rospy.Subscriber('normalvector_endeffector', Float32MultiArray, callback)
     rot_pub = rospy.Publisher('joint_angles', Int32MultiArray, queue_size=10)
     rospy.spin()
