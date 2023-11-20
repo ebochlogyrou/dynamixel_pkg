@@ -1,49 +1,36 @@
 #!/usr/bin/env python3
 
-#this is the ROS integration of the inverse Kinematics_file for testing inverse_Kinematic_test.py is used
+#command to use rostopic pub -1 /joint_angles std_msgs/Int32MultiArray "layout:
+#   dim:
+#   - label: ''
+#     size: 0
+#     stride: 0
+#   data_offset: 0
+# data: [90,-90]" <-- fill in with the desired angle 
+
 import rospy
-import numpy as np
+from std_msgs.msg import Int32MultiArray
 
-from std_msgs.msg import Int32MultiArray 
-from std_msgs.msg import Float32MultiArray
-from dynamixel_sdk_examples.msg import SetPosition 
+#This Node transforms a desired input degree comand to the respective clicks. 
 
-class distributor: # takes an array which has the size of the number of dynamixels and  sends it as individual messages to the read_write_node.py
-    def __init__(self):
-        pub_topic_name = "rotation_angles" 
-        sub_topic_name = "normal_vector" #topic comming from the deg_to_clicks
+#gear ratio=10/51
+#0.088 [deg/puls]
 
-        self.pub = rospy.Publisher(pub_topic_name, SetPosition, queue_size=10) 
-        self.number_subscriber = rospy.Subscriber(sub_topic_name, Float32MultiArray, self.callback)
-        self.set_individ_pose_msg = SetPosition()
+#Tube should turn x°->°abtrieb*51/10=°Antrieb °Antrieb*[puls/deg]=puls_abtrieb
+gear_ratio=51/10
+puls_per_deg=1/0.088
+dtc_factor = gear_ratio*puls_per_deg
 
-    
-    def inverse_kinematics_n_to_q(self, msg): #calculates the rotatio angles of the swivle nozle (for two angles)
+# Subscribe to "vector/rotation" topic and publish to "motor/position"
+def callback(msg):   
+    transformed_data = Int32MultiArray() 
+    transformed_data.data = [int(value * dtc_factor) for value in msg.data] 
+    clicks_pub.publish(transformed_data)
 
-        it = 0
-        max_it = 0
-        damping = 0.001 #for inverse kinematics
-        alpha = 0.5
-
-        
-
-
-        
-        
-        for index, element in enumerate(msg.data):  #tranverses through message array
-            self.set_individ_pose_msg.id = index + 1
-            #because matrices start from 0 index
-            self.set_individ_pose_msg.position = element
-            self.pub.publish(self.set_individ_pose_msg) 
-            #rospy.sleep(0.2)
-
-        
-
-         
-
-
-if __name__ == '__main__': 
-    node_name = "publish_bulk_commands_class"
+if __name__ == '__main__':
+    # Initialize node, topics to subscribe and publish to
+    node_name = "degree_to_clicks"
     rospy.init_node(node_name)
-    distributor() 
+    dtc_sub = rospy.Subscriber('joint_angles', Int32MultiArray, callback)
+    clicks_pub = rospy.Publisher('clicks_goal_pos_array', Int32MultiArray, queue_size=10)
     rospy.spin()

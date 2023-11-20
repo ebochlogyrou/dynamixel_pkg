@@ -7,13 +7,16 @@ import numpy as np
 #main
 if __name__ == "__main__":
 
-    desired_normal_vector = np.array([1,0,0]) #in inertial frame(I or O in the drawing)
+    desired_normal_vector = np.array([0,1,0]) #in inertial frame(I or O in the drawing)
 
-    q,dph = inverse_kinematics_n_to_q(desired_normal_vector)
+    qrad,dph = inverse_kinematics_n_to_q(desired_normal_vector)
+
+    qdeg = qrad*360/(2*np.pi)
+    qdeg_int = np.round(qdeg).astype(int)
    
 
-    print("q ", q)
-    print("kkkkk")
+    print("qdeg ", qdeg)
+    print("qrad", qrad)
     print("dph ", dph)
 
 
