@@ -4,7 +4,9 @@
 import numpy as np
 from sympy import symbols, sqrt, asin,  diff, pi, cos, sin, lambdify
 
-def get_T_0E_symbolic(q1,q2):
+def get_T_0E_symbolic():
+
+    q1, q2 = symbols('q1 q2')
 
     # Define variables
     e1 = np.pi / 4
@@ -67,8 +69,8 @@ def get_T_0E_symbolic(q1,q2):
 
     return T_0E
 
-def get_thrustvector_symbolic(q1,q2):
-    post_transform_sym = get_T_0E_symbolic(q1,q2)
+def get_thrustvector_symbolic():
+    post_transform_sym = get_T_0E_symbolic()
     o_r_ey_sym = post_transform_sym[:3, 1]  # Assuming 1:3 corresponds to the first three rows
     
     #o_r_ey_sym = simplify(o_r_ey_sym)
@@ -76,12 +78,12 @@ def get_thrustvector_symbolic(q1,q2):
     return o_r_ey_sym
 
 
-def getangles_sym(q1,q2):
+def getangles_sym():
     #q1, q2, x, y, z = symbols('q1 q2 x y z') #is this needed ?
 
     x, y, z = symbols('x y z')
 
-    T = get_thrustvector_symbolic(q1,q2)
+    T = get_thrustvector_symbolic()
     x_val = T[0]
     y_val = T[1]
     z_val = T[2]
@@ -100,7 +102,7 @@ def getangles_sym(q1,q2):
 
 def getJacobian_angles_sym():
     q1, q2 = symbols('q1 q2')
-    phi, theta = getangles_sym(q1,q2)
+    phi, theta = getangles_sym()
     
     I_J_sym = np.array([
         [diff(phi, q1), diff(phi, q2)],
@@ -123,10 +125,10 @@ def pseudoInverseMat(A, lambda_val):
     # Compute the pseudo-inverse for both left and right cases
     if m > n:
         # Compute the left pseudoinverse.
-        pinvA = np.linalg.solve(A.T @ A + lambda_val**2 * np.eye(n), A.T)
+        pinvA = np.linalg.inv(A.T @ A + lambda_val**2 * np.eye(n)) @ A.T
     elif m <= n:
         # Compute the right pseudoinverse.
-        pinvA = np.linalg.solve(A @ A.T + lambda_val**2 * np.eye(m), A.T)
+        pinvA = A.T @ np.linalg.inv(A @ A.T + lambda_val**2 * np.eye(m))
     
     return pinvA
 
