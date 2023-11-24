@@ -48,7 +48,7 @@ rosrun dynamixel_pkg read_write_node.py
 
 **Note:** The inverse_kinematics node is not debugged yet.
 
-## How to test the inverse kinematics node
+## How to test and optimize the inverse kinematics node
 
 The File src/nodes/in_kin_new_angles/main_in_kin_sym_test.py is the PPyrhon file used for testing the inverse Kinematics and also optimizing it. You can Execute it directly in your IDE
 
