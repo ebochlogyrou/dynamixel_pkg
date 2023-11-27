@@ -161,5 +161,3 @@ def get_numeric_jac(Jac, q1_val, q2_val):
     ])
 
     return numJac
-    
-
