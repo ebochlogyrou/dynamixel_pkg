@@ -4,16 +4,23 @@ import rospy
 import numpy as np
 from std_msgs.msg import Int32MultiArray
 from std_msgs.msg import Float32MultiArray
-from helper_functions_symb import getJacobian_angles_sym, getangles_sym, pseudoInverseMat
+from helper_functions_symb import getJacobian_angles_sym, getangles_sym, pseudoInverseMat, cart_to_spherical_coord
 from sympy import symbols, lambdify
 
 
-#This Node transforms a desired chi vector (phi_des, theta_des) on the endeffector of de "2DSN" to the rotation angles of the two joints.. 
+#This Node transforms a desired chi vector (phi_des, theta_des) on the endeffector of de "2BSN" to the rotation angles of the two joints.. 
 
 
 #command to publish on topic: rostopic pub /normalvector_enteffector std_msgs/Float32MultiArray "{data: [0.0, 1.0, 0.0]}"
 
-# Subscribe to "joint_angles" topic and publish to "motor/position"
+# Subscribe to "joint_angles" topic and publish to "joint_angles"
+
+#comments: 1) it publishes twice on a topic??? Can't understand why?
+# I input -100 and it gives out the same angle as when i input 010
+#the cart_to_spherical coordinates works i tested it 
+
+
+
 
 def callback(msg):   
     
@@ -48,8 +55,10 @@ def callback(msg):
     it_max = 100
     alpha = 0.05
     damping = 0.01
+
+    sph_coord = cart_to_spherical_coord(msg.data)
     
-    chi_des= np.array(msg.data, dtype=np.float32)
+    chi_des= np.array(sph_coord, dtype=np.float32)
     q = np.array([0.01 ,0.01]) #initial guess
 
     acceptable_chi_err = 1/180*np.pi
@@ -93,6 +102,6 @@ if __name__ == '__main__':
     node_name = "inverse_kinematics_chi_des_to_q"
     rospy.init_node(node_name, anonymous=True)
 
-    normal_vector_sub = rospy.Subscriber('chi_des_endeffector', Float32MultiArray, callback)
+    normal_vector_sub = rospy.Subscriber('chi_des_endeffector_cartesian', Float32MultiArray, callback)
     rot_pub = rospy.Publisher('joint_angles', Int32MultiArray, queue_size=10)
     rospy.spin()
