@@ -18,7 +18,18 @@ def cart_to_spherical_coord(cart_coord):
     d = np.sqrt(x**2 + y**2+ z**2)
 
     sph_coord[0] = np.arcsin((-1)*z/r)
-    sph_coord[1] = np.arccos(y/d) 
+
+     # Adjust the range of arccos to [-π, π]
+    sph_coord[1] = np.arccos(y/d)
+
+    # Adjust the range of phi to [-π, π]
+    if x < 0 and z<0:
+        sph_coord[0] = np.pi - sph_coord[0]
+    elif x < 0 and z >= 0:
+        sph_coord[0] = sph_coord[0] - np.pi
+    elif x >= 0:
+        sph_coord[0] = sph_coord[0]
+
     print ("Spherical coordinates are: ", sph_coord)
     return sph_coord 
 

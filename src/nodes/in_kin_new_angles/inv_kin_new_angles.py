@@ -49,12 +49,12 @@ def callback(msg):
     alpha = 0.05
     damping = 0.01
     #now message is phi and theta in radians
-    chi_des= np.array(msg.data, dtype=np.float32)
+    #chi_des= np.array(msg.data, dtype=np.float32)
 
 
     #taking cartisian msg and return phi and theta - doesnt work yet 
-    # sph_coord = cart_to_spherical_coord(msg.data) 
-    # chi_des= np.array(sph_coord, dtype=np.float32)
+    sph_coord = cart_to_spherical_coord(msg.data) 
+    chi_des= np.array(sph_coord, dtype=np.float32)
 
     q = np.array([0.01 ,0.01]) #initial guess
 
