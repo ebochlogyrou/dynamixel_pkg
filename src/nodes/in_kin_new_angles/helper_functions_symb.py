@@ -4,6 +4,27 @@
 import numpy as np
 from sympy import symbols, sqrt, asin,  diff, pi, cos, sin, lambdify
 
+
+
+def cart_to_spherical_coord(cart_coord): 
+
+    #input msg in cartesian coordinates 3d
+    #output an array in spherical coordinates [phi, theta]
+    sph_coord = [0.0, 0.0]
+    x = cart_coord[0]
+    y = cart_coord[1] 
+    z = cart_coord[2] 
+    r = np.sqrt(x**2+ z**2)
+    d = np.sqrt(x**2 + y**2+ z**2)
+
+    sph_coord[0] = np.arcsin((-1)*z/r)
+    sph_coord[1] = np.arccos(y/d) 
+    print ("Spherical coordinates are: ", sph_coord)
+    return sph_coord 
+
+
+
+
 def get_T_0E_symbolic():
 
     q1, q2 = symbols('q1 q2')

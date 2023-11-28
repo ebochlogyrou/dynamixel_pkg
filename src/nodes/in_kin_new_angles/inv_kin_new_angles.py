@@ -4,7 +4,7 @@ import rospy
 import numpy as np
 from std_msgs.msg import Int32MultiArray
 from std_msgs.msg import Float32MultiArray
-from helper_functions_symb import getJacobian_angles_sym, getangles_sym, pseudoInverseMat
+from helper_functions_symb import getJacobian_angles_sym, getangles_sym, pseudoInverseMat, cart_to_spherical_coord
 from sympy import symbols, lambdify
 
 
@@ -48,8 +48,14 @@ def callback(msg):
     it_max = 100
     alpha = 0.05
     damping = 0.01
-    
+    #now message is phi and theta in radians
     chi_des= np.array(msg.data, dtype=np.float32)
+
+
+    #taking cartisian msg and return phi and theta - doesnt work yet 
+    # sph_coord = cart_to_spherical_coord(msg.data) 
+    # chi_des= np.array(sph_coord, dtype=np.float32)
+
     q = np.array([0.01 ,0.01]) #initial guess
 
     acceptable_chi_err = 1/180*np.pi
